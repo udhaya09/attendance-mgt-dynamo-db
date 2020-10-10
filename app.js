@@ -47,6 +47,7 @@ app.use(bodyParser.json());
 const employeeRoutes = require("./api/router/employeeRouter");
 const adminRoutes = require("./api/router/adminRouter");
 const loginRoutes = require("./api/router/loginRouter");
+const departmentRoutes = require("./api/router/departmentRouter");
 
 console.log("application started, running on " + process.env.APP_PORT);
 
@@ -59,6 +60,7 @@ console.log("application started, running on " + process.env.APP_PORT);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/login", loginRoutes);
+app.use("/api/department", departmentRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

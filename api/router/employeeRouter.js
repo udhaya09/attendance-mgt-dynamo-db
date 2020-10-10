@@ -3,10 +3,22 @@ const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 
 const { createEmployee } = require("../controller/employeeController");
+const {deleteEmployee} = require("../controller/employeeController")
+const {updateEmployeAttributes} = require("../controller/employeeController")
+const {associateVehicleToEmployee} = require("../controller/employeeController")
 //const { findAllEmployees } = require("../controller/employeeController");
 
 //creating new employee
 router.post("/", createEmployee);
+
+//update employee attributes
+router.patch("/update-employee-attributes/:pk/:sk", updateEmployeAttributes);
+
+//associate vehicle attributes
+router.patch("/assoc-vehicle/:pk/:sk", associateVehicleToEmployee);
+
+//delete employee
+router.delete("/:pk/:sk", deleteEmployee);
 
 //find all employee
 //router.get("/", findAllEmployees);
