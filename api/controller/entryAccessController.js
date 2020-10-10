@@ -10,8 +10,8 @@ module.exports = {
       const eaChannel = new EmsModel({
         //id: empId,
         pk: "emp_" + req.body.emp_id,
-        sk: "ea_" + req.body.ea_type_short + "_" + req.body.ea_id,
-        ea_type: req.body.ea_type,
+        sk: "ea_" + req.body.ea_type + "_" + req.body.ea_id,
+        ea_description: req.body.ea_description,
         ea_id: req.body.ea_id   
       });
       eaChannel

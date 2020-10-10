@@ -17,7 +17,7 @@ module.exports = {
       emp_id: empId,
       username: req.body.username,
       password: req.body.password,
-      role: req.body.role,
+      roles: req.body.roles,
      
     });
     adminUser

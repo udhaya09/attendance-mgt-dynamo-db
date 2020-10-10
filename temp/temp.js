@@ -11,6 +11,8 @@ console.log(m.format('yyyy'));
 
 console.log(m.format('MM').toString() + m.format('yyyy').toString());
 
+console.log(Date.now());
+
 
 
 /* var datetime = new Date();
