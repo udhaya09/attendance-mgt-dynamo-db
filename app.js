@@ -49,6 +49,7 @@ const adminRoutes = require("./api/router/adminRouter");
 const loginRoutes = require("./api/router/loginRouter");
 const departmentRoutes = require("./api/router/departmentRouter");
 const entryAccessRoutes = require("./api/router/entryAccessRouter");
+const attendanceRoutes = require("./api/router/attendanceRouter");
 
 console.log("application started, running on " + process.env.APP_PORT);
 
@@ -63,6 +64,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/entry-access", entryAccessRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
