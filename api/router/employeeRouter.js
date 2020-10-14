@@ -3,11 +3,16 @@ const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 
 const { createEmployee } = require("../controller/employeeController");
-const {deleteEmployee} = require("../controller/employeeController")
-const {updateEmployeAttributes} = require("../controller/employeeController")
-const {associateVehicleToEmployee} = require("../controller/employeeController")
-const {findEmployeByPhone} = require("../controller/employeeController")
-const {findEmployeByEmail} = require("../controller/employeeController")
+const { deleteEmployee } = require("../controller/employeeController");
+const { updateEmployeAttributes } = require("../controller/employeeController");
+const {
+  associateVehicleToEmployee,
+} = require("../controller/employeeController");
+const { findEmployeByPhone } = require("../controller/employeeController");
+const {
+  findEmployeByEmail,
+  getAllEmployees,
+} = require("../controller/employeeController");
 //const { findAllEmployees } = require("../controller/employeeController");
 
 //creating new employee
@@ -26,6 +31,8 @@ router.delete("/:pk/:sk", deleteEmployee);
 router.get("/phone/:phone", findEmployeByPhone);
 
 router.get("/email/:email", findEmployeByEmail);
+
+router.get("/", getAllEmployees);
 
 //find all employee
 //router.get("/", findAllEmployees);

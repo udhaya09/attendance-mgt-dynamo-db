@@ -10,9 +10,8 @@ const emsSchema = new dynamoose.Schema(
       type: String,
       rangeKey: true,
     },
-    
   },
-  
+
   {
     saveUnknown: true,
   }

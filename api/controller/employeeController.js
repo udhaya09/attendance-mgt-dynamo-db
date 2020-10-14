@@ -6,7 +6,6 @@ const EmsModel = require("../model/emsModel");
 
 var AWS = require("aws-sdk");
 
-
 AWS.config.update({
   region: "us-east-2",
   aws_access_key_id: "AKIAZTMTSMHZZBDRNBUX",
@@ -44,10 +43,10 @@ module.exports = {
         res.status(500).json({ error: err });
       });
   },
-  updateEmployeAttributes:(req, res, next) => {
+  updateEmployeAttributes: (req, res, next) => {
     const empAttributes = req.body;
     //const empId = req.params.empId;
-  
+
     EmsModel.update(
       { pk: req.params.pk, sk: req.params.sk },
       empAttributes,
@@ -65,10 +64,10 @@ module.exports = {
       }
     );
   },
-  associateVehicleToEmployee:(req, res, next) => {
+  associateVehicleToEmployee: (req, res, next) => {
     const vehicleAttributes = req.body;
     //const empId = req.params.empId;
-  
+
     EmsModel.update(
       { pk: req.params.pk, sk: req.params.sk },
       vehicleAttributes,
@@ -86,7 +85,7 @@ module.exports = {
       }
     );
   },
-  deleteEmployee : (req, res, next) => {
+  deleteEmployee: (req, res, next) => {
     EmsModel.delete({ pk: req.params.pk, sk: req.params.sk }, (err) => {
       if (err) {
         console.error(err);
@@ -99,93 +98,132 @@ module.exports = {
     });
   },
   findEmployeByPhone: (req, res, next) => {
-    
-    console.log("test");
     var docClient = new AWS.DynamoDB.DocumentClient();
-    
+
     var params = {
-        TableName: "ems_model",
-        ProjectionExpression: "emp_id, fullname, #ph, #em",
-        FilterExpression: "phone = :ph",
-        ExpressionAttributeNames: {
-            "#ph": "phone",
-            "#em":"email"
-        },
-        ExpressionAttributeValues: {
-             ":ph": req.params.phone,
-             
-        }
+      TableName: "ems_model",
+      ProjectionExpression: "emp_id, fullname, #ph, #em",
+      FilterExpression: "phone = :ph",
+      ExpressionAttributeNames: {
+        "#ph": "phone",
+        "#em": "email",
+      },
+      ExpressionAttributeValues: {
+        ":ph": req.params.phone,
+      },
     };
-    
-    
+
     docClient.scan(params, onScan);
-    
+
     function onScan(err, data) {
-        if (err) {
-            console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
-            res.send("unable to find");
-        } else {
-            // print all the movies
-            console.log("Scan succeeded.");
-            data.Items.forEach(function(emp) {
-               console.log(emp);
-               res.send(emp);
-            });
-    
-            // continue scanning if we have more movies, because
-            // scan can retrieve a maximum of 1MB of data
-            if (typeof data.LastEvaluatedKey != "undefined") {
-                console.log("Scanning for more...");
-                params.ExclusiveStartKey = data.LastEvaluatedKey;
-                docClient.scan(params, onScan);
-            }
+      if (err) {
+        console.error(
+          "Unable to scan the table. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+        res.send("unable to find");
+      } else {
+        // print all the movies
+        console.log("Scan succeeded.");
+        data.Items.forEach(function (emp) {
+          console.log(emp);
+          res.send(emp);
+        });
+
+        // continue scanning if we have more movies, because
+        // scan can retrieve a maximum of 1MB of data
+        if (typeof data.LastEvaluatedKey != "undefined") {
+          console.log("Scanning for more...");
+          params.ExclusiveStartKey = data.LastEvaluatedKey;
+          docClient.scan(params, onScan);
         }
+      }
     }
-    
   },
   findEmployeByEmail: (req, res, next) => {
-    
-    console.log("test");
     var docClient = new AWS.DynamoDB.DocumentClient();
-    
+
     var params = {
-        TableName: "ems_model",
-        ProjectionExpression: "emp_id, fullname, #ph, #em",
-        FilterExpression: "email = :em",
-        ExpressionAttributeNames: {
-            "#ph": "phone",
-            "#em":"email"
-        },
-        ExpressionAttributeValues: {
-             ":em": req.params.email,
-             
-        }
+      TableName: "ems_model",
+      ProjectionExpression: "emp_id, fullname, #ph, #em",
+      FilterExpression: "email = :em",
+      ExpressionAttributeNames: {
+        "#ph": "phone",
+        "#em": "email",
+      },
+      ExpressionAttributeValues: {
+        ":em": req.params.email,
+      },
     };
-    
-    
+
     docClient.scan(params, onScan);
-    
+
     function onScan(err, data) {
-        if (err) {
-            console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
-            res.send("unable to find");
-        } else {
-            // print all the movies
-            console.log("Scan succeeded.");
-            data.Items.forEach(function(emp) {
-               console.log(emp);
-               res.send(emp);
-            });
-    
-            // continue scanning if we have more movies, because
-            // scan can retrieve a maximum of 1MB of data
-            if (typeof data.LastEvaluatedKey != "undefined") {
-                console.log("Scanning for more...");
-                params.ExclusiveStartKey = data.LastEvaluatedKey;
-                docClient.scan(params, onScan);
-            }
+      if (err) {
+        console.error(
+          "Unable to scan the table. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+        res.send("unable to find");
+      } else {
+        // print all the movies
+        console.log("Scan succeeded.");
+        data.Items.forEach(function (emp) {
+          console.log(emp);
+          res.send(emp);
+        });
+
+        // continue scanning if we have more movies, because
+        // scan can retrieve a maximum of 1MB of data
+        if (typeof data.LastEvaluatedKey != "undefined") {
+          console.log("Scanning for more...");
+          params.ExclusiveStartKey = data.LastEvaluatedKey;
+          docClient.scan(params, onScan);
         }
+      }
     }
-    
+  },
+  getAllEmployees: (req, res, next) => {
+    var docClient = new AWS.DynamoDB.DocumentClient();
+
+    var params = {
+      TableName: "ems_model",
+      ProjectionExpression: "emp_id, fullname, dob, #pos",
+      FilterExpression: "begins_with(sk,:skvalue)",
+      ExpressionAttributeNames: {
+        "#pos": "position",
+      },
+      ExpressionAttributeValues: {
+        ":skvalue": "emp_prof",
+      },
+    };
+
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+      if (err) {
+        console.error(
+          "Unable to scan the table. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+        res.send("unable to find");
+      } else {
+        // print all the movies
+        console.log("Scan succeeded.");
+        res.send(data);
+        /*  data.Items.forEach(function (emp) {
+          console.log(emp);
+          res.send(emp);
+        }); */
+
+        // continue scanning if we have more movies, because
+        // scan can retrieve a maximum of 1MB of data
+        if (typeof data.LastEvaluatedKey != "undefined") {
+          console.log("Scanning for more...");
+          params.ExclusiveStartKey = data.LastEvaluatedKey;
+          docClient.scan(params, onScan);
+        }
+      }
+    }
   },
 };
