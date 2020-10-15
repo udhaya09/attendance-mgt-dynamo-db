@@ -5,12 +5,9 @@ const dynamoose = require("dynamoose");
 const EmsModel = require("../model/emsModel");
 
 var AWS = require("aws-sdk");
+const {awsConfig} = require("../config/config");
 
-AWS.config.update({
-  region: "us-east-2",
-  aws_access_key_id: "AKIAZTMTSMHZZBDRNBUX",
-  aws_secret_access_key: "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",
-});
+AWS.config = awsConfig;
 
 console.log("test");
 var docClient = new AWS.DynamoDB.DocumentClient();

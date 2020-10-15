@@ -9,11 +9,9 @@ const EmsModel = require("../model/emsModel");
 
 var AWS = require("aws-sdk");
 
-AWS.config.update({
-  region: "us-east-2",
-  aws_access_key_id: "AKIAZTMTSMHZZBDRNBUX",
-  aws_secret_access_key: "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",
-});
+const {awsConfig} = require("../config/config");
+
+AWS.config = awsConfig;
 
 module.exports = {
   findEmployeeByEntryAccesId: (req, callBack) => {
