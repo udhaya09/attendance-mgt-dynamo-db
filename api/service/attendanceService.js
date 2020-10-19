@@ -9,72 +9,69 @@ const EmsModel = require("../model/emsModel");
 
 var AWS = require("aws-sdk");
 
-const {awsConfig} = require("../config/config");
+const { awsConfig } = require("../config/config");
 
 AWS.config = awsConfig;
 
 module.exports = {
   findEmployeeByEntryAccesId: (req, callBack) => {
-    console.log("test - ea_id: " + req.body.ea_id);
-    var docClient = new AWS.DynamoDB.DocumentClient();
+    console.log("ea_id: " + req.body.ea_id);
+    console.log("ea_type: " + req.body.ea_type);
 
-    var params = {
-      TableName: "ems_model",
-      ProjectionExpression: "pk",
-      FilterExpression: "ea_id = :ea_id",
-      ExpressionAttributeValues: {
-        ":ea_id": req.body.ea_id,
-      },
-    };
+    EmsModel.query("ea_type")
+      .eq(req.body.ea_type)
+      .and()
+      .where("ea_id")
+      .eq(req.body.ea_id)
+      .using("entry-access")
+      .exec((error, result) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("found emp for given ea_id: " + result[0].pk);
+          console.log(result);
+          return callBack(null, result[0]);
 
-    docClient.scan(params, onScan);
-
-    function onScan(err, data) {
-      if (err) {
-        console.error(
-          "Unable to scan the table. Error JSON:",
-          JSON.stringify(err, null, 2)
-        );
-      } else {
-        // print all the movies
-        console.log("Scan succeeded.");
-        data.Items.forEach(function (result) {
-          console.log(result.pk);
-          return callBack(null, result);
-        });
-
-        /*     // continue scanning if we have more movies, because
-            // scan can retrieve a maximum of 1MB of data
-            if (typeof data.LastEvaluatedKey != "undefined") {
-                console.log("Scanning for more...");
-                params.ExclusiveStartKey = data.LastEvaluatedKey;
-                docClient.scan(params, onScan);
-            } */
-      }
-    }
+          // [ Document { name: 'Will', breed: 'Terrier', id: 1 },
+          //   lastKey: undefined,
+          //   count: 1,
+          //   queriedCount: 2,
+          //   timesQueried: 1 ]
+          //  console.log(results[0]); // { name: 'Will', breed: 'Terrier', id: 1 }
+          // console.log(results.count); // 1
+          //  console.log(Array.isArray(results)); // true
+          // console.log(results.scannedCount); // 2
+        }
+      });
   },
   updateLoggingService: (params, callBack) => {
-    console.log("controler" + params.pk);
+    console.log("updateLoggingService" + params.pk + params.entryChannel);
     let m = moment();
 
-    const pk = params.pk;
+    const pk = params.pk; // pk is emp_id
     const sk =
       "attn_reg_" + m.format("MM").toString() + m.format("yyyy").toString();
+    const entryChannel = params.entryChannel;
 
     console.log("pk & sk: " + pk + " " + sk);
     const loggingType = params.loggingType;
     var label =
-      "logging_" +
-      m.format("DD").toString() +
-      m.format("MM").toString() +
-      m.format("yyyy").toString() +
-      "_1";
+      m.format("DD").toString() + m.format("MM").toString() + "_logging";
 
     if (loggingType == "entry") {
       EmsModel.update(
         { pk: pk, sk: sk },
         /*  {$SET: {"name": "entry_exit_logs"}},  */ {
-          $ADD: { entry_logs: [m.toString()] },
+          $ADD: {
+            entry_logs: [
+              {
+                [label]: {
+                  ea_channel: entryChannel,
+                  entry_time: m.toString(),
+                },
+              },
+            ],
+          },
         },
         (error, result) => {
           if (error) {
@@ -91,15 +88,25 @@ module.exports = {
       EmsModel.update(
         { pk: pk, sk: sk },
         /*  {$SET: {"name": "entry_exit_logs"}},  */ {
-          $SET: { entry_logs: [m.toString()] },
+          $ADD: {
+            exit_logs: [
+              {
+                [label]: {
+                  ea_channel: entryChannel,
+                  exit_time: m.toString(),
+                },
+              },
+            ],
+          },
         },
         (error, result) => {
           if (error) {
             console.error(error);
             return callBack(null, error);
+            // res.status(500).json({ error: err });
           } else {
             console.log(result);
-            return callBack(null, result);
+            return callBack(null, error);
           }
         }
       );

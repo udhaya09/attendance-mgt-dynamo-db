@@ -18,8 +18,8 @@ console.log(m.format("MM").toString() + m.format("yyyy").toString());
 console.log(Date.now());
 
 var duration = new Duration(
-  new Date("Mon Oct 12 2020 12:48:29 GMT+0530"),
-  new Date("Mon Oct 12 2020 20:15:29 GMT+0530")
+  new Date("Mon Oct 12 2020 20:20:29 GMT+0530"),
+  new Date("Mon Oct 12 2020 21:30:29 GMT+0530")
 );
 
 console.log("duration: " + duration.minutes);

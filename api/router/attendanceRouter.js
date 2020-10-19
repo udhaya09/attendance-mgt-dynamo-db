@@ -4,12 +4,12 @@ const { v4: uuidv4 } = require("uuid");
 const customId = require("custom-id");
 const dynamoose = require("dynamoose");
 
+
 const {
   createAttendanceRegister,
-} = require("../controller/attendanceController");
-const {
   updateLogging,
   updateDuration,
+  updateShiftSchedule
 } = require("../controller/attendanceController");
 
 //creating createAttendanceRegister
@@ -20,5 +20,8 @@ router.patch("/update-logging", updateLogging);
 
 //update duration
 router.patch("/update-duration", updateDuration);
+
+//update duration
+router.patch("/update-shift-schedule", updateShiftSchedule);
 
 module.exports = router;
