@@ -20,6 +20,7 @@ AWS.config.update({
 app.use(morganLog("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 /* mongoose
   .connect("mongodb://localhost:27017/eims_db", {
