@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 const dynamoose = require("dynamoose");
 const AWS = require("aws-sdk");
+const cors = require("cors");
 
 const app = express();
 
