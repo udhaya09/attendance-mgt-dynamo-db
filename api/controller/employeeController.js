@@ -5,7 +5,7 @@ const dynamoose = require("dynamoose");
 const EmsModel = require("../model/emsModel");
 
 var AWS = require("aws-sdk");
-const {awsConfig} = require("../config/config");
+const { awsConfig } = require("../config/config");
 
 AWS.config = awsConfig;
 
@@ -15,15 +15,31 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 module.exports = {
   createEmployee: (req, res) => {
     const empId = customId({ randomLength: 1 });
+    const empAttri = req.body;
 
     const employee = new EmsModel({
       //id: empId,
       pk: "emp_" + empId,
       sk: "emp_prof_" + empId,
-      fullname: req.body.fullname,
-      emp_id: empId,
-      dob: req.body.dob,
-      position: req.body.position,
+      address: {
+        address1: empAttri.address1,
+        address2: empAttri.address2,
+        city: empAttri.city,
+        state: empAttri.state,
+        country: empAttri.country,
+        postcode: empAttri.postcode,
+            },
+      department: empAttri.department,
+      dob: empAttri.dob,
+      email: empAttri.email,
+      empType: empAttri.empType,
+      firstName: empAttri.firstName,
+      gender: empAttri.gender,
+      hasVehicle: empAttri.hasVehicle,
+      lastName: empAttri.lastName,
+      phone: empAttri.phone,
+      
+      shift: empAttri.shift,
     });
 
     employee

@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 const dynamoose = require("dynamoose");
 const AWS = require("aws-sdk");
+
+//const passport = require("passport");
 const cors = require("cors");
 
 const app = express();
@@ -61,6 +63,10 @@ console.log("application started, running on " + process.env.APP_PORT);
   });
 }); */
 
+// jwt authentication
+/* app.use(passport.initialize());
+passport.use("jwt", jwtStrategy);
+ */
 app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/login", loginRoutes);
