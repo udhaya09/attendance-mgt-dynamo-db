@@ -11,13 +11,24 @@ const emsSchema = new dynamoose.Schema(
       rangeKey: true,
     },
 
+    emp_info: {
+      type: String,
+      index: {
+        hashKey: true,
+        rangeKey: "sk",
+        name: "employee-info",
+        global: "true",
+        project: ["emp_id", "firstName", "lastName", "shift", "department"],
+      },
+    },
     username: {
       type: String,
       index: {
         hashKey: true,
         name: "admin-login",
+        rangeKey: "sk",
         global: "true",
-        project: ["emp_id", "roles", "permissions", "password"],
+        project: ["roles", "permissions", "password"],
       },
     },
     ea_id: {

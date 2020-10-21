@@ -21,6 +21,8 @@ module.exports = {
       //id: empId,
       pk: "emp_" + empId,
       sk: "emp_prof_" + empId,
+      emp_info: "emp_info" + empId,
+      emp_id: "emp_" + empId,
       address: {
         address1: empAttri.address1,
         address2: empAttri.address2,
@@ -28,7 +30,7 @@ module.exports = {
         state: empAttri.state,
         country: empAttri.country,
         postcode: empAttri.postcode,
-            },
+      },
       department: empAttri.department,
       dob: empAttri.dob,
       email: empAttri.email,
@@ -38,7 +40,7 @@ module.exports = {
       hasVehicle: empAttri.hasVehicle,
       lastName: empAttri.lastName,
       phone: empAttri.phone,
-      
+
       shift: empAttri.shift,
     });
 
@@ -197,46 +199,31 @@ module.exports = {
     }
   },
   getAllEmployees: (req, res, next) => {
-    var docClient = new AWS.DynamoDB.DocumentClient();
+    console.log("inside getAllEmployees");
 
-    var params = {
-      TableName: "ems_model",
-      ProjectionExpression: "emp_id, fullname, dob, #pos",
-      FilterExpression: "begins_with(sk,:skvalue)",
-      ExpressionAttributeNames: {
-        "#pos": "position",
-      },
-      ExpressionAttributeValues: {
-        ":skvalue": "emp_prof",
-      },
-    };
+    //console.log(new dynamoose.Condition().filter("sk").beginsWith("emp_prof"));
 
-    docClient.scan(params, onScan);
-
-    function onScan(err, data) {
-      if (err) {
-        console.error(
-          "Unable to scan the table. Error JSON:",
-          JSON.stringify(err, null, 2)
-        );
-        res.send("unable to find");
-      } else {
-        // print all the movies
-        console.log("Scan succeeded.");
-        res.send(data);
-        /*  data.Items.forEach(function (emp) {
-          console.log(emp);
-          res.send(emp);
-        }); */
-
-        // continue scanning if we have more movies, because
-        // scan can retrieve a maximum of 1MB of data
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          console.log("Scanning for more...");
-          params.ExclusiveStartKey = data.LastEvaluatedKey;
-          docClient.scan(params, onScan);
+    EmsModel.scan()
+      .using("employee-info")
+      .exec((error, result) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log(result);
+          res.send(result);
         }
-      }
-    }
+      });
+
+    /*    EmsModel.scan("emp_id")
+      .beginsWith("emp_id)
+      .using("employee-info")
+      .exec((error, result) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log(result);
+          //res.send(result);
+        }
+      });  */
   },
 };
